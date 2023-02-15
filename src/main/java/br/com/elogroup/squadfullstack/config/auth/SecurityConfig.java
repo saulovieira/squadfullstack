@@ -1,4 +1,4 @@
-package br.com.elogroup.squadfullstack.auth.security;
+package br.com.elogroup.squadfullstack.config.auth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import br.com.elogroup.squadfullstack.auth.UserDetailImpl;
-import br.com.elogroup.squadfullstack.model.Role;
-import br.com.elogroup.squadfullstack.model.User;
+import br.com.elogroup.squadfullstack.domain.model.Role;
+import br.com.elogroup.squadfullstack.domain.model.User;
 import br.com.elogroup.squadfullstack.repository.UserRespository;
 
 @EnableWebSecurity
@@ -82,8 +81,14 @@ public class SecurityConfig {
 	
  	@Bean
  	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
- 		 http.csrf().disable().authorizeHttpRequests()
- 		 .anyRequest().authenticated().and().formLogin().and().httpBasic();
+ 		 http.csrf().disable()
+	 		 .authorizeHttpRequests()
+		 		 .requestMatchers("/api/user")
+		 		 	.authenticated()
+			 	 .requestMatchers("/api/user/*")
+			 		 	.authenticated()
+		 		 .and()
+		 		 		.httpBasic();
          return http.build();
  	}
 }

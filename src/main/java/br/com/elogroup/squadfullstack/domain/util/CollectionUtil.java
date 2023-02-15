@@ -1,4 +1,4 @@
-package br.com.elogroup.squadfullstack.utils;
+package br.com.elogroup.squadfullstack.domain.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceUtils <T> {
-
+public class CollectionUtil <T> {
+	
 	public List<T> getListFromIterable(Iterable<T> iterable) {
 		
 		List<T> list = new ArrayList<>();
@@ -16,4 +16,5 @@ public class ServiceUtils <T> {
 		}
 		return list;
 	}
+
 }

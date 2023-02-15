@@ -1,9 +1,10 @@
-package br.com.elogroup.squadfullstack.controller;
+package br.com.elogroup.squadfullstack.api.controller;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+import br.com.elogroup.squadfullstack.domain.util.ExceptionType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,5 +16,6 @@ public class ResponseWrapper <T> {
 	   private Integer statusCode;
 	   private String message;
 	   private String description;
+	   private ExceptionType type;
 	   private List<T> data;
 }

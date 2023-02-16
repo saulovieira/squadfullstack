@@ -7,15 +7,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserToList implements InputModel {
-	
+public class UserToUpdate implements InputModel {
 	
 	@NotNull(message = "{constraints.Id.NotNull}")
 	private long id;
 	
 	@NotBlank(message = "{constraints.username.NotBlank}")
 	private String username;
-			
+	
+	@NotBlank(message = "{constraints.password.NotBlank}")
+	private String password;
+		
 	@NotBlank(message = "{constraints.email.NotBlank}")
 	private String email;
 	

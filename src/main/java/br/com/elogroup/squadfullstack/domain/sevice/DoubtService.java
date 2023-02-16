@@ -1,42 +1,79 @@
 package br.com.elogroup.squadfullstack.domain.sevice;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.elogroup.squadfullstack.domain.model.Doubt;
 import br.com.elogroup.squadfullstack.domain.util.CollectionUtil;
 import br.com.elogroup.squadfullstack.repository.DoubtRespository;
+import br.com.elogroup.squadfullstack.util.MessageUtil;
 import jakarta.validation.Valid;
 
 @Service
 public class DoubtService {
 
 	@Autowired
-	private DoubtRespository doubtRespository;
+	private DoubtRespository repository;
 	
 	@Autowired
 	private CollectionUtil<Doubt> doubtUtils;
 
 	
+	@Autowired
+	private MessageUtil msgUtils;
+	
+	
 	public List<Doubt> getDoubts() {
 
-		return doubtUtils.getListFromIterable(doubtRespository.findAll());
+		return doubtUtils.getListFromIterable(repository.findAll());
 	}
 
+	public Doubt geDoubtById(Long id) {
+		 
+		return repository.findById(id).orElse(null);
+	}
+	
 	public Doubt create(@Valid Doubt doubt) throws Exception {
 		
-		
-		if (doubt.getCategory() == null || doubt.getCategory().getId() == null) {
-			throw new DuplicateKeyException(String.format("Already exists a doubt with this question '%s' in database", doubt.getQuestion()));
+		if (repository.findByQuestion(doubt.getQuestion()).isPresent()) {
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.duplicateQuestion", doubt.getQuestion()));
 		}
 		
-		if (doubtRespository.findByQuestion(doubt.getQuestion()).isPresent()) {
-			throw new DuplicateKeyException(String.format("Already exists a doubt with this question '%s' in database", doubt.getQuestion()));
+		return repository.save(doubt);
+	}
+	
+	public Doubt change(@Valid Doubt doubt) throws Exception {
+		
+		if(doubt.getId() == null) {
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", doubt.getId()));
+			
+		} else if (repository.findById(doubt.getId()).isEmpty()) {
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.notExists", doubt.getId()));
+			
+		} 
+		
+		return repository.save(doubt);			
+	}
+	
+	public Doubt delete(Long id) throws Exception {
+		
+		if(id == null) {
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", id));
+			
 		}
 		
-		return doubtRespository.save(doubt);
+		Optional<Doubt> userToDelete = repository.findById(id);
+		if (userToDelete.isEmpty()) {
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.notExists", id));
+		} 
+		
+		repository.delete(userToDelete.get());	
+		
+		return userToDelete.get();
+
 	}
 }

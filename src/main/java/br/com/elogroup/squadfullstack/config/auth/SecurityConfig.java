@@ -87,8 +87,15 @@ public class SecurityConfig {
 		 		 	.authenticated()
 			 	 .requestMatchers("/api/user/*")
 			 		 	.authenticated()
-		 		 .and()
-		 		 		.httpBasic();
+		 		 .requestMatchers("/api/category")
+		 		 	.authenticated()
+			 	 .requestMatchers("/api/category/*")
+			 		 	.authenticated()
+		 		 .requestMatchers("/api/doubt")
+		 		 	.authenticated()
+			 	 .requestMatchers("/api/doubt/*")
+			 		 	.authenticated()
+			 	 .and().httpBasic();
          return http.build();
  	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +30,10 @@ public class LoginService {
 	private PasswordEncoder encoder;
 	
 
+	public User getUserById(Long id) {
+
+		return repository.findById(id).orElse(null);
+	}
 	
 	public List<User> getUsers() {
 
@@ -40,10 +44,10 @@ public class LoginService {
 		user.setPassword(encoder.encode(user.getPassword()));
 		
 		if (repository.findByEmail(user.getEmail()).isPresent()) {
-			throw new DuplicateKeyException(msgUtils.getMessageBundle("exception.user.duplicateKey", user.getEmail()));
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.user.duplicateEmail", user.getEmail()));
 		}
 
-		return repository.save(user);			
+		return repository.save(user);
 
 	}
 	
@@ -51,10 +55,10 @@ public class LoginService {
 		user.setPassword(encoder.encode(user.getPassword()));
 		
 		if(user.getId() == null) {
-			throw new DuplicateKeyException(msgUtils.getMessageBundle("constraints.id.NotEmpty", user.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", user.getId()));
 			
 		} else if (repository.findByEmail(user.getEmail()).isEmpty()) {
-			throw new DuplicateKeyException(msgUtils.getMessageBundle("exception.user.notExists", user.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.user.notExists", user.getId()));
 			
 		} 
 		
@@ -65,14 +69,12 @@ public class LoginService {
 	public User delete(Long id) throws Exception {
 		
 		if(id == null) {
-			throw new DuplicateKeyException(msgUtils.getMessageBundle("constraints.id.NotEmpty", id));
-			
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", id));	
 		}
 		
 		Optional<User> userToDelete = repository.findById(id);
 		if (userToDelete.isEmpty()) {
-			throw new DuplicateKeyException(msgUtils.getMessageBundle("exception.user.notExists", id));
-			
+			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.user.notExists", id));
 		} 
 		
 		repository.delete(userToDelete.get());	

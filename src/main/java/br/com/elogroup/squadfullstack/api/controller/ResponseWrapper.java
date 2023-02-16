@@ -17,5 +17,6 @@ public class ResponseWrapper <T> {
 	   private String message;
 	   private String description;
 	   private ExceptionType type;
+	   private boolean success;
 	   private List<T> data;
 }

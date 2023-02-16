@@ -7,19 +7,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserToList implements InputModel {
-	
-	
-	@NotNull(message = "{constraints.Id.NotNull}")
-	private long id;
+public class UserToCreate implements InputModel {
 	
 	@NotBlank(message = "{constraints.username.NotBlank}")
 	private String username;
-			
+	
+	@NotBlank(message = "{constraints.password.NotBlank}")
+	private String password;
+		
 	@NotBlank(message = "{constraints.email.NotBlank}")
 	private String email;
 	
 	@NotNull(message = "{constraints.isEnabled.NotNull}")
 	private Boolean isEnabled;
+	
 	
 }

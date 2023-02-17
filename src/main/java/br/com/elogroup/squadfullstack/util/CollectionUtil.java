@@ -1,4 +1,4 @@
-package br.com.elogroup.squadfullstack.domain.util;
+package br.com.elogroup.squadfullstack.util;
 
 import java.util.ArrayList;
 import java.util.List;

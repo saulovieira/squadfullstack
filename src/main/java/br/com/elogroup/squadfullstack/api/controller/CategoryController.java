@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
+import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
 import br.com.elogroup.squadfullstack.api.model.CategoryToCreate;
 import br.com.elogroup.squadfullstack.api.model.CategoryToListAndUpdate;
 import br.com.elogroup.squadfullstack.domain.model.Category;
@@ -27,22 +28,17 @@ import br.com.elogroup.squadfullstack.domain.sevice.CategoryService;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/api/category")
+@RequiredArgsConstructor
 public class CategoryController extends BaseController {
 	
-	@Autowired
-	private CategoryService categoryService;
-	
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@Autowired
-	private LocalValidatorFactoryBean beanValidator;
-	
-	@Autowired
-	private MessageUtil msgUtil;
+	private final CategoryService categoryService;
+	private final ModelMapper modelMapper;
+	private final LocalValidatorFactoryBean beanValidator;
+	private final MessageUtil msgUtil;
 	
 	@GetMapping()
 	@ResponseBody
@@ -63,12 +59,14 @@ public class CategoryController extends BaseController {
 				
 				responseWrapper.setData(usersDto);
 			} else {
-				responseWrapper.setMessage(msgUtil.getMessageBundle("operation.category.findAll.notFound"));
+				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.category.findAll.notFound"));
 				responseWrapper.setSuccess(false);
 			}
 			
+		} catch (ForbiddenException | DataIntegrityViolationException e) {
+			throw new ForbiddenException(e.getMessage());
 		} catch (Throwable e) {
-			assembyResponseInternalServerError(responseWrapper, e);
+			throw new InternalServerErrorException(e.getMessage());
 		}
 		return responseWrapper;
 	}
@@ -82,10 +80,9 @@ public class CategoryController extends BaseController {
 		try {			
 			Set<ConstraintViolation<@Valid CategoryToCreate>> validate = beanValidator.validate(categoryInput);
 			if (!validate.isEmpty()) {
-				responseWrapper.setMessage(validate.stream()
+				throw new ForbiddenException(validate.stream()
 						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
 						.collect(Collectors.toList()).toString());
-				assemblyResponseToInvalidInput(responseWrapper);
 			} else {
 			
 				Category user = modelMapper.map(categoryInput, Category.class);
@@ -93,15 +90,13 @@ public class CategoryController extends BaseController {
 	
 				assemblyResponseSuccessOperation(responseWrapper);
 				responseWrapper.setData(Arrays.asList(userDto));
-				responseWrapper.setMessage(msgUtil.getMessageBundle("operation.category.create.success", user.getName()));
+				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.category.create.success", user.getName()));
 			}
 			
-		} catch(DataIntegrityViolationException e) {
-			assemblyResponseToBadRequest(responseWrapper, e);
-			
+		}  catch (ForbiddenException | DataIntegrityViolationException e) {
+			throw new ForbiddenException(e.getMessage());
 		} catch (Throwable e) {
-			assembyResponseInternalServerError(responseWrapper, e);
-			
+			throw new InternalServerErrorException(e.getMessage());
 		}
 		return responseWrapper;
 	}
@@ -115,10 +110,9 @@ public class CategoryController extends BaseController {
 		try {			
 			Set<ConstraintViolation<CategoryToListAndUpdate>> validate = beanValidator.validate(categoryInput);
 			if (!validate.isEmpty()) {
-				responseWrapper.setMessage(validate.stream()
+				throw new ForbiddenException (validate.stream()
 						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
 						.collect(Collectors.toList()).toString());
-				assemblyResponseToInvalidInput(responseWrapper);
 			} else {
 			
 				Category user = modelMapper.map(categoryInput, Category.class);
@@ -126,14 +120,12 @@ public class CategoryController extends BaseController {
 				
 				assemblyResponseSuccessOperation(responseWrapper);
 				responseWrapper.setData(Arrays.asList(userDto));
-				responseWrapper.setMessage(msgUtil.getMessageBundle("operation.category.change.success", user.getName()));
+				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.category.change.success", user.getName()));
 			}
-		} catch(DataIntegrityViolationException e) {
-			assemblyResponseToBadRequest(responseWrapper, e);
-			
+		} catch (ForbiddenException | DataIntegrityViolationException e) {
+			throw new ForbiddenException(e.getMessage());
 		} catch (Throwable e) {
-			assembyResponseInternalServerError(responseWrapper, e);
-			
+			throw new InternalServerErrorException(e.getMessage());
 		}
 		return responseWrapper;
 	}
@@ -147,11 +139,12 @@ public class CategoryController extends BaseController {
 		try {			
 			assemblyResponseSuccessOperation(responseWrapper);			
 			Category user = categoryService.delete(id);
-			responseWrapper.setMessage(msgUtil.getMessageBundle("operation.category.delete.success", user.getName()));
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.category.delete.success", user.getName()));
 			
+		} catch (ForbiddenException | DataIntegrityViolationException e) {
+			throw new ForbiddenException(e.getMessage());
 		} catch (Throwable e) {
-			assembyResponseInternalServerError(responseWrapper, e);
-			
+			throw new InternalServerErrorException(e.getMessage());
 		}
 		return responseWrapper;
 	}

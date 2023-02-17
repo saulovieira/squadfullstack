@@ -1,22 +1,27 @@
 package br.com.elogroup.squadfullstack.util;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
+import org.springframework.context.i18n.LocaleContextHolder;
 
-import br.com.elogroup.squadfullstack.domain.util.Constants;
-
-@Component
 public class MessageUtil {
 
 	@Autowired
 	private MessageSource messageSource;
-	
-	public String getMessageBundle(String messageKey) {
-		return messageSource.getMessage(messageKey, null, Constants.DEFAULT_MESSAGE_MISSING_BUNDLE,  Constants.LOCALE_APP);
+
+	public String getLocalizedMessage(String messageKey) {
+		return messageSource.getMessage(messageKey, null, String.format(Constants.DEFAULT_MESSAGE_MISSING_BUNDLE, messageKey), getLocale());
 	}
-	
-	public String getMessageBundle(String messageKey, Object... args) {
-		return String.format(messageSource.getMessage(messageKey, null, Constants.DEFAULT_MESSAGE_MISSING_BUNDLE,  Constants.LOCALE_APP), args) ;
+
+	public String getLocalizedMessage(String messageKey, Object... args) {
+		return String.format(
+				messageSource.getMessage(messageKey, null, String.format(Constants.DEFAULT_MESSAGE_MISSING_BUNDLE, messageKey), getLocale()),
+				args);
+	}
+
+	private Locale getLocale() {
+		return LocaleContextHolder.getLocale();
 	}
 }

@@ -11,20 +11,8 @@ public class ModelMapperConfig {
 	ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		
-		//configUser(modelMapper);
+		//Add custom strategies to convert fields
 		
 		return modelMapper;
-	}
-	
-	
-	@SuppressWarnings("unused")
-	private void configUser(ModelMapper modelMapper) {
-		
-//		Converter<List<Role>, List<String>> rolesConverter = 
-//				ctx -> ctx.getSource().stream().map(role -> role.getName()).toList(); 
-//				
-//		modelMapper.createTypeMap(User.class, UserToList.class)
-//			.addMappings(mapper -> mapper.using(rolesConverter)
-//			.map(User::getRoles, UserToList::setRoles));
 	}
 }

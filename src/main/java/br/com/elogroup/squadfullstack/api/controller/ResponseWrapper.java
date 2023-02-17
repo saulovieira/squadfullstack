@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import br.com.elogroup.squadfullstack.domain.util.ExceptionType;
+import br.com.elogroup.squadfullstack.api.exception.ExceptionType;
 import lombok.Getter;
 import lombok.Setter;
 

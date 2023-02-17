@@ -8,8 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.elogroup.squadfullstack.domain.model.Category;
-import br.com.elogroup.squadfullstack.domain.util.CollectionUtil;
-import br.com.elogroup.squadfullstack.repository.CategoryRespository;
+import br.com.elogroup.squadfullstack.domain.repository.CategoryRespository;
+import br.com.elogroup.squadfullstack.util.CollectionUtil;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
 import jakarta.validation.Valid;
 
@@ -33,7 +33,7 @@ public class CategoryService {
 	public Category create(@Valid Category category) throws Exception {
 		
 		if (repository.findByName(category.getName()).isPresent()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.category.duplicateName", category.getName()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.category.duplicateName", category.getName()));
 		}
 
 		return repository.save(category);
@@ -42,10 +42,10 @@ public class CategoryService {
 	public Category change(@Valid Category doubt) throws Exception {
 		
 		if(doubt.getId() == null) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", doubt.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", doubt.getId()));
 			
 		} else if (repository.findById(doubt.getId()).isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.category.notExists", doubt.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.category.notExists", doubt.getId()));
 			
 		} 
 		
@@ -55,13 +55,13 @@ public class CategoryService {
 	public Category delete(Long id) throws Exception {
 		
 		if(id == null) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", id));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", id));
 			
 		}
 		
 		Optional<Category> userToDelete = repository.findById(id);
 		if (userToDelete.isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.category.notExists", id));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.category.notExists", id));
 		} 
 		
 		repository.delete(userToDelete.get());	

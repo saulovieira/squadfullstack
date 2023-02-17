@@ -8,8 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.elogroup.squadfullstack.domain.model.Doubt;
-import br.com.elogroup.squadfullstack.domain.util.CollectionUtil;
-import br.com.elogroup.squadfullstack.repository.DoubtRespository;
+import br.com.elogroup.squadfullstack.domain.repository.DoubtRespository;
+import br.com.elogroup.squadfullstack.util.CollectionUtil;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
 import jakarta.validation.Valid;
 
@@ -40,7 +40,7 @@ public class DoubtService {
 	public Doubt create(@Valid Doubt doubt) throws Exception {
 		
 		if (repository.findByQuestion(doubt.getQuestion()).isPresent()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.duplicateQuestion", doubt.getQuestion()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.doubt.duplicateQuestion", doubt.getQuestion()));
 		}
 		
 		return repository.save(doubt);
@@ -49,10 +49,10 @@ public class DoubtService {
 	public Doubt change(@Valid Doubt doubt) throws Exception {
 		
 		if(doubt.getId() == null) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", doubt.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", doubt.getId()));
 			
 		} else if (repository.findById(doubt.getId()).isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.notExists", doubt.getId()));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.doubt.notExists", doubt.getId()));
 			
 		} 
 		
@@ -62,13 +62,13 @@ public class DoubtService {
 	public Doubt delete(Long id) throws Exception {
 		
 		if(id == null) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("constraints.id.NotEmpty", id));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", id));
 			
 		}
 		
 		Optional<Doubt> userToDelete = repository.findById(id);
 		if (userToDelete.isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getMessageBundle("exception.doubt.notExists", id));
+			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.doubt.notExists", id));
 		} 
 		
 		repository.delete(userToDelete.get());	

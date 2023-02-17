@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryToCreate implements InputModel {
+public class CategoryToCreate implements resourceModel {
 	
-	@NotBlank(message = "{constraints.name.NotEmpty}")
+	@NotBlank(message = "{constraints.name.NotBlank}")
 	private String name;
 	
 }

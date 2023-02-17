@@ -1,4 +1,4 @@
-package br.com.elogroup.squadfullstack.repository;
+package br.com.elogroup.squadfullstack.domain.repository;
 
 import java.util.Optional;
 

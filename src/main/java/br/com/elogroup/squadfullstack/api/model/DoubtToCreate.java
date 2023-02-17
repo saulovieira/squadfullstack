@@ -14,12 +14,12 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoubtToCreate implements InputModel {
+public class DoubtToCreate implements resourceModel {
 	
-	@NotBlank(message = "{constraints.question.NotEmpty}")
+	@NotBlank(message = "{constraints.question.NotBlank}")
 	private String question;
 	
-	@NotBlank(message = "{constraints.answer.NotEmpty}")
+	@NotBlank(message = "{constraints.answer.NotBlank}")
 	private String answer;
 	
 	@NotNull(message = "{constraints.categoryId.NotNull}")

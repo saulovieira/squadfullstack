@@ -1,4 +1,4 @@
-package br.com.elogroup.squadfullstack.domain.util;
+package br.com.elogroup.squadfullstack.api.exception;
 
 public enum ExceptionType {
 

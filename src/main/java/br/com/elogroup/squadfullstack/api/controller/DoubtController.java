@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
 import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
 import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
 import br.com.elogroup.squadfullstack.api.model.DoubtToCreate;
@@ -104,7 +105,7 @@ public class DoubtController extends BaseController {
 			Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
 
 			if (!validate.isEmpty()) {
-				throw new ForbiddenException(
+				throw new BadRequestException (
 						validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
 								.collect(Collectors.toList()).toString());
 			} else {
@@ -120,6 +121,8 @@ public class DoubtController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (BadRequestException e) {
+			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -135,7 +138,7 @@ public class DoubtController extends BaseController {
 		try {
 			Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
 			if (!validate.isEmpty()) {
-				throw new ForbiddenException(
+				throw new BadRequestException (
 						validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
 								.collect(Collectors.toList()).toString());
 			} else {
@@ -149,6 +152,8 @@ public class DoubtController extends BaseController {
 			}
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (BadRequestException e) {
+			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}

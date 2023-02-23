@@ -27,6 +27,7 @@ import br.com.elogroup.squadfullstack.api.auth.model.AuthenticationResponse;
 import br.com.elogroup.squadfullstack.api.auth.repository.AuthenticationService;
 import br.com.elogroup.squadfullstack.api.controller.BaseController;
 import br.com.elogroup.squadfullstack.api.controller.ResponseWrapper;
+import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
 import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
 import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
 import br.com.elogroup.squadfullstack.api.exception.UnauthorizedException;
@@ -54,7 +55,7 @@ public class AuthenticationController extends BaseController {
 			Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(request);
 
 			if (!validate.isEmpty()) {
-				throw new ForbiddenException (
+				throw new BadRequestException (
 						validate.stream()
 						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
 						.collect(Collectors.toList()).toString());
@@ -64,6 +65,8 @@ public class AuthenticationController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (BadRequestException e) {
+			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -76,7 +79,7 @@ public class AuthenticationController extends BaseController {
 			
 			Set<ConstraintViolation<AuthenticationRequest>> validate = beanValidator.validate(request);
 			if (!validate.isEmpty()) {
-				throw new ForbiddenException(
+				throw new BadRequestException (
 						validate.stream()
 						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
 						.collect(Collectors.toList()).toString());
@@ -89,6 +92,8 @@ public class AuthenticationController extends BaseController {
 			throw new ForbiddenException(e.getMessage());
 		} catch (BadCredentialsException e) {
 			throw new UnauthorizedException(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
+		} catch (BadRequestException e) {
+			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -156,7 +161,7 @@ public class AuthenticationController extends BaseController {
 			Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(userInput);
 
 			if (!validate.isEmpty()) {
-				throw new ForbiddenException(validate.stream()
+				throw new BadRequestException (validate.stream()
 						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
 						.collect(Collectors.toList()).toString());
 			} else {
@@ -171,6 +176,8 @@ public class AuthenticationController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (BadRequestException e) {
+			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}

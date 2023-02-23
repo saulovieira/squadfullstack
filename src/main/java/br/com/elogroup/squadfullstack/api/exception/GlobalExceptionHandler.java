@@ -12,8 +12,16 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ForbiddenException.class)
 	public ResponseEntity<ErrorDTO> generateForbiddenException(ForbiddenException ex) {
 		ErrorDTO errorDTO = fillErrorDto(ex);
-		errorDTO.setType(ExceptionType.VALIDATION);
+		errorDTO.setType(ExceptionType.EXCEPTION);
 
+		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+	}
+
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<ErrorDTO> generateBadRequestException(BadRequestException ex) {
+		ErrorDTO errorDTO = fillErrorDto(ex);
+		errorDTO.setType(ExceptionType.VALIDATION);
+		
 		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
 	}
 

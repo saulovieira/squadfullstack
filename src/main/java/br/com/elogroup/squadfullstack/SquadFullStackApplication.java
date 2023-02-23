@@ -4,11 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SquadFullStaskApplication {
+public class SquadFullStackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SquadFullStaskApplication.class, args);
+		SpringApplication.run(SquadFullStackApplication.class, args);
 	}
-
-
 }

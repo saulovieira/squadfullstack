@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 import br.com.elogroup.squadfullstack.api.exception.ExceptionType;
 import br.com.elogroup.squadfullstack.api.model.resourceModel;
-import lombok.extern.slf4j.Slf4j;
 
 public class BaseController {
 

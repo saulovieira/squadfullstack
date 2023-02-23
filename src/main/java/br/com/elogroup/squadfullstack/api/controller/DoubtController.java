@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
 import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
 import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
+import br.com.elogroup.squadfullstack.api.exception.NotFoundException;
 import br.com.elogroup.squadfullstack.api.model.DoubtToCreate;
 import br.com.elogroup.squadfullstack.api.model.DoubtToListAndUpdate;
 import br.com.elogroup.squadfullstack.domain.model.Doubt;
 import br.com.elogroup.squadfullstack.domain.sevice.DoubtService;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 
@@ -63,6 +65,8 @@ public class DoubtController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -88,6 +92,8 @@ public class DoubtController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -121,6 +127,8 @@ public class DoubtController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (BadRequestException e) {
 			throw e ;
 		} catch (Throwable e) {
@@ -152,8 +160,8 @@ public class DoubtController extends BaseController {
 			}
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
-		} catch (BadRequestException e) {
-			throw e ;
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -172,6 +180,8 @@ public class DoubtController extends BaseController {
 			assemblyResponseSuccessOperation(responseWrapper);
 			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.delete.success", user.getQuestion()));
 
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
 		} catch (Throwable e) {

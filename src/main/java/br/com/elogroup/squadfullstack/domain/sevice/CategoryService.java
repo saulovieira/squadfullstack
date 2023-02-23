@@ -8,16 +8,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.elogroup.squadfullstack.domain.model.Category;
-import br.com.elogroup.squadfullstack.domain.repository.CategoryRespository;
+import br.com.elogroup.squadfullstack.domain.repository.CategoryRepository;
 import br.com.elogroup.squadfullstack.util.CollectionUtil;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @Service
 public class CategoryService {
 
 	@Autowired
-	private CategoryRespository repository;
+	private CategoryRepository repository;
 	
 	@Autowired
 	private CollectionUtil<Category> userUtils;
@@ -41,11 +42,8 @@ public class CategoryService {
 	
 	public Category change(@Valid Category doubt) throws Exception {
 		
-		if(doubt.getId() == null) {
-			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", doubt.getId()));
-			
-		} else if (repository.findById(doubt.getId()).isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.category.notExists", doubt.getId()));
+		if (repository.findById(doubt.getId()).isEmpty()) {
+			throw new EntityNotFoundException(msgUtils.getLocalizedMessage("exception.category.notExists", doubt.getId()));
 			
 		} 
 		
@@ -53,15 +51,10 @@ public class CategoryService {
 	}
 	
 	public Category delete(Long id) throws Exception {
-		
-		if(id == null) {
-			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("constraints.id.NotEmpty", id));
 			
-		}
-		
 		Optional<Category> userToDelete = repository.findById(id);
 		if (userToDelete.isEmpty()) {
-			throw new DataIntegrityViolationException(msgUtils.getLocalizedMessage("exception.category.notExists", id));
+			throw new EntityNotFoundException(msgUtils.getLocalizedMessage("exception.category.notExists", id));
 		} 
 		
 		repository.delete(userToDelete.get());	

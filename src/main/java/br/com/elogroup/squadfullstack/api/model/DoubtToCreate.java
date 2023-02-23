@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoubtToCreate implements resourceModel {
+public class DoubtToCreate implements ResourceModel {
 	
 	@NotBlank(message = "{constraints.question.NotBlank}")
 	private String question;

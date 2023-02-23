@@ -30,11 +30,13 @@ import br.com.elogroup.squadfullstack.api.controller.ResponseWrapper;
 import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
 import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
 import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
+import br.com.elogroup.squadfullstack.api.exception.NotFoundException;
 import br.com.elogroup.squadfullstack.api.exception.UnauthorizedException;
 import br.com.elogroup.squadfullstack.api.model.UserRequest;
 import br.com.elogroup.squadfullstack.api.model.UserResponse;
 import br.com.elogroup.squadfullstack.domain.model.UserDetail;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 
@@ -65,6 +67,8 @@ public class AuthenticationController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (BadRequestException e) {
 			throw e ;
 		} catch (Throwable e) {
@@ -92,6 +96,8 @@ public class AuthenticationController extends BaseController {
 			throw new ForbiddenException(e.getMessage());
 		} catch (BadCredentialsException e) {
 			throw new UnauthorizedException(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (BadRequestException e) {
 			throw e ;
 		} catch (Throwable e) {
@@ -119,6 +125,8 @@ public class AuthenticationController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -144,6 +152,8 @@ public class AuthenticationController extends BaseController {
 			
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -178,6 +188,8 @@ public class AuthenticationController extends BaseController {
 			throw new ForbiddenException(e.getMessage());
 		} catch (BadRequestException e) {
 			throw e ;
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
@@ -198,6 +210,8 @@ public class AuthenticationController extends BaseController {
 
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}

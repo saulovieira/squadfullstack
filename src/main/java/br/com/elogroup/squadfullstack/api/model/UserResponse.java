@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse implements resourceModel {
+public class UserResponse implements ResourceModel {
 
 	@NotBlank(message = "{constraints.firstname.NotBlank}")
 	private String firstname;

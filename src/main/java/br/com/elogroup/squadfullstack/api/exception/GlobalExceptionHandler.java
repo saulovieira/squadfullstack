@@ -25,6 +25,14 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
 	}
 
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<ErrorDTO> generateBadRequestException(NotFoundException ex) {
+		ErrorDTO errorDTO = fillErrorDto(ex);
+		errorDTO.setType(ExceptionType.VALIDATION);
+		
+		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+	}
+
 	@ExceptionHandler(InternalServerErrorException.class)
 	public ResponseEntity<ErrorDTO> generateInternalServerErrorException(InternalServerErrorException ex) {
 		ErrorDTO errorDTO = fillErrorDto(ex);

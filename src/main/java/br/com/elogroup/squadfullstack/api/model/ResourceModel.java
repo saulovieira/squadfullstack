@@ -1,5 +1,5 @@
 package br.com.elogroup.squadfullstack.api.model;
 
-public interface resourceModel {
+public interface ResourceModel {
 
 }

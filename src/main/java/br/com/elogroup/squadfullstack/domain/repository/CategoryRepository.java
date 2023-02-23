@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import br.com.elogroup.squadfullstack.domain.model.Category;
 
-public interface CategoryRespository extends CrudRepository<Category, Long> {
+public interface CategoryRepository extends CrudRepository<Category, Long> {
 	
 	Optional<Category> findByName(String name);
 

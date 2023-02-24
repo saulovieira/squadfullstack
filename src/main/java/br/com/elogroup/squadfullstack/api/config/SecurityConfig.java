@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import br.com.elogroup.squadfullstack.api.auth.filter.JwtAuthenticationFilter;
 import br.com.elogroup.squadfullstack.api.exception.FilterChainExceptionHandler;
-import br.com.elogroup.squadfullstack.api.exception.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -23,7 +22,6 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthFilter;
   private final AuthenticationProvider authenticationProvider;
   private final FilterChainExceptionHandler filterChainExceptionHandler;
-  private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
  
   
   @Bean
@@ -36,7 +34,7 @@ public class SecurityConfig {
         .permitAll()
         .anyRequest()
         .authenticated()
-        .and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
+        .and().exceptionHandling()
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

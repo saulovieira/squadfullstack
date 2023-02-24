@@ -7,5 +7,4 @@ public interface GenericHttpException {
 	HttpStatus getStatus();
 
 	String getMessage();
-
 }

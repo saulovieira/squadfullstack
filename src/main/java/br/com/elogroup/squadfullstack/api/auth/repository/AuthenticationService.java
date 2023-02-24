@@ -3,7 +3,6 @@ package br.com.elogroup.squadfullstack.api.auth.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Service;
 import br.com.elogroup.squadfullstack.api.auth.model.AuthenticationRequest;
 import br.com.elogroup.squadfullstack.api.auth.model.AuthenticationResponse;
 import br.com.elogroup.squadfullstack.api.auth.service.JwtService;
+import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
+import br.com.elogroup.squadfullstack.api.exception.ConflictException;
+import br.com.elogroup.squadfullstack.api.exception.NotFoundException;
 import br.com.elogroup.squadfullstack.api.model.UserRequest;
 import br.com.elogroup.squadfullstack.api.model.UserResponse;
 import br.com.elogroup.squadfullstack.domain.model.Role;
@@ -34,7 +36,7 @@ public class AuthenticationService {
 	public AuthenticationResponse register(UserRequest request) {
 
 		if (repository.findByEmail(request.getEmail()).isPresent()) {
-			throw new DataIntegrityViolationException(
+			throw new ConflictException(
 					msgUtil.getLocalizedMessage("exception.user.duplicateEmail", request.getEmail()));
 		}
 		
@@ -61,7 +63,7 @@ public class AuthenticationService {
 			);
 		var user = repository.findByEmail(request.getEmail());
 		if (user.isEmpty()) {
-			throw new DataIntegrityViolationException(
+			throw new BadRequestException(
 					msgUtil.getLocalizedMessage("exception.user.badcredentials", request.getEmail()));
 		}
 		var jwtToken = jwtService.generateToken(user.get());
@@ -77,7 +79,7 @@ public class AuthenticationService {
 		
 		Optional<UserDetail> userDetail = repository.findById(id);
 		if (!userDetail.isPresent()) {
-			throw new DataIntegrityViolationException(
+			throw new NotFoundException(
 					msgUtil.getLocalizedMessage("exception.user.notExists",  id));
 		}
 		return userDetail.get();
@@ -86,7 +88,7 @@ public class AuthenticationService {
 	public UserDetail update(UserResponse user) {
 		Optional<UserDetail> userDetail = repository.findByEmail(user.getEmail());
 		if (!userDetail.isPresent()) {
-			throw new DataIntegrityViolationException(
+			throw new NotFoundException(
 					msgUtil.getLocalizedMessage("exception.user.notExists",  user.getEmail()));
 		}
 		return repository.findByEmail(user.getEmail()).orElse(null);

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +30,6 @@ import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
 import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
 import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
 import br.com.elogroup.squadfullstack.api.exception.NotFoundException;
-import br.com.elogroup.squadfullstack.api.exception.UnauthorizedException;
 import br.com.elogroup.squadfullstack.api.model.UserRequest;
 import br.com.elogroup.squadfullstack.api.model.UserResponse;
 import br.com.elogroup.squadfullstack.domain.model.UserDetail;
@@ -79,7 +77,6 @@ public class AuthenticationController extends BaseController {
 	@PostMapping("/authenticate")
 	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws Exception {
 
-		try {
 			
 			Set<ConstraintViolation<AuthenticationRequest>> validate = beanValidator.validate(request);
 			if (!validate.isEmpty()) {
@@ -91,6 +88,9 @@ public class AuthenticationController extends BaseController {
 			} else {
 				return ResponseEntity.ok(service.authenticate(request));
 			}
+
+		/*
+		try {
 			
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
@@ -102,7 +102,7 @@ public class AuthenticationController extends BaseController {
 			throw e ;
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
-		}
+		}*/
 	}
 	
 	@GetMapping()
@@ -110,7 +110,6 @@ public class AuthenticationController extends BaseController {
 	public ResponseWrapper<UserResponse> getAll() {
 		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
 		responseWrapper.setData(new ArrayList<UserResponse>());
-		try {
 			List<UserDetail> users = service.getAll();
 			responseWrapper.setData(new ArrayList<UserResponse>());
 			assemblyResponseSuccessOperation(responseWrapper);
@@ -122,14 +121,16 @@ public class AuthenticationController extends BaseController {
 			}else  {
 				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findAll.notFound"));
 			}
-
+			/*
+			try {
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
 		} catch (EntityNotFoundException e) {
 			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
-		}
+		}*/
+			
 		return responseWrapper;
 	}
 	
@@ -138,7 +139,6 @@ public class AuthenticationController extends BaseController {
 	public ResponseWrapper<UserResponse> getById(@PathVariable Long id) {
 		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
 		responseWrapper.setData(new ArrayList<UserResponse>());
-		try {
 			UserDetail user = service.getById(id);
 			responseWrapper.setData(new ArrayList<UserResponse>());
 			assemblyResponseSuccessOperation(responseWrapper);
@@ -149,14 +149,16 @@ public class AuthenticationController extends BaseController {
 				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
 				responseWrapper.setSuccess(false);
 			}
-			
+
+			/*
+			try {
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
 		} catch (EntityNotFoundException e) {
 			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
-		}
+		}*/
 		return responseWrapper;
 	}
 	
@@ -166,7 +168,6 @@ public class AuthenticationController extends BaseController {
 	public ResponseWrapper<UserResponse> change(@RequestBody UserRequest userInput) {
 		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
 
-		try {
 
 			Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(userInput);
 
@@ -183,7 +184,8 @@ public class AuthenticationController extends BaseController {
 				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.change.success", user.getEmail()));
 				responseWrapper.setData(Arrays.asList(userDto));
 			}
-
+			/*
+			try {
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
 		} catch (BadRequestException e) {
@@ -193,7 +195,7 @@ public class AuthenticationController extends BaseController {
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
-		
+		*/
 		return responseWrapper;
 	}
 
@@ -203,18 +205,18 @@ public class AuthenticationController extends BaseController {
 		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
 		responseWrapper.setData(new ArrayList<UserResponse>());
 
-		try {
 			UserDetail user = service.delete(id);
 			assemblyResponseSuccessOperation(responseWrapper);
 			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.delete.success", user.getEmail()));
-
+			/*
+			try {
 		} catch (ForbiddenException | DataIntegrityViolationException e) {
 			throw new ForbiddenException(e.getMessage());
 		} catch (EntityNotFoundException e) {
 			throw new NotFoundException(e.getMessage());
 		} catch (Throwable e) {
 			throw new InternalServerErrorException(e.getMessage());
-		}
+		}*/
 		
 		return responseWrapper;
 	}

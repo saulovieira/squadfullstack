@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,15 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.com.elogroup.squadfullstack.api.exception.BadRequestException;
-import br.com.elogroup.squadfullstack.api.exception.ForbiddenException;
-import br.com.elogroup.squadfullstack.api.exception.InternalServerErrorException;
-import br.com.elogroup.squadfullstack.api.exception.NotFoundException;
 import br.com.elogroup.squadfullstack.api.model.DoubtToCreate;
 import br.com.elogroup.squadfullstack.api.model.DoubtToListAndUpdate;
 import br.com.elogroup.squadfullstack.domain.model.Doubt;
 import br.com.elogroup.squadfullstack.domain.sevice.DoubtService;
 import br.com.elogroup.squadfullstack.util.MessageUtil;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 
@@ -48,28 +43,21 @@ public class DoubtController extends BaseController {
 	public ResponseWrapper<DoubtToListAndUpdate> getAll() {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
 		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
-		try {
-			List<Doubt> users = doubtService.getDoubts();
-			responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
-			assemblyResponseSuccessOperation(responseWrapper);
 
-			if (users != null && !users.isEmpty()) {
-				List<DoubtToListAndUpdate> usersDto = users.stream().map(this::toDoubtDTO).collect(Collectors.toList());
+		List<Doubt> users = doubtService.getDoubts();
+		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		assemblyResponseSuccessOperation(responseWrapper);
 
-				responseWrapper.setData(usersDto);
+		if (users != null && !users.isEmpty()) {
+			List<DoubtToListAndUpdate> usersDto = users.stream().map(this::toDoubtDTO).collect(Collectors.toList());
 
-			} else {
-				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.findAll.notFound"));
-				responseWrapper.setSuccess(false);
-			}
+			responseWrapper.setData(usersDto);
 
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
+		} else {
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.findAll.notFound"));
+			responseWrapper.setSuccess(false);
 		}
+
 		return responseWrapper;
 	}
 
@@ -78,115 +66,82 @@ public class DoubtController extends BaseController {
 	public ResponseWrapper<DoubtToListAndUpdate> getById(@PathVariable Long id) {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
 		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
-		try {
-			Doubt doubt = doubtService.geDoubtById(id);
-			responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
-			assemblyResponseSuccessOperation(responseWrapper);
 
-			if (doubt != null) {
-				responseWrapper.setData(Collections.singletonList(modelMapper.map(doubt, DoubtToListAndUpdate.class)));
-			} else {
-				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.findById.notFound"));
-				responseWrapper.setSuccess(false);
-			}
+		Doubt doubt = doubtService.geDoubtById(id);
+		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		assemblyResponseSuccessOperation(responseWrapper);
 
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
+		if (doubt != null) {
+			responseWrapper.setData(Collections.singletonList(modelMapper.map(doubt, DoubtToListAndUpdate.class)));
+		} else {
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.findById.notFound"));
+			responseWrapper.setSuccess(false);
 		}
+
 		return responseWrapper;
 	}
 
 	@PostMapping()
 	@ResponseBody
-	public ResponseWrapper<DoubtToCreate> create(@RequestBody DoubtToCreate doubtInput) {
+	public ResponseWrapper<DoubtToCreate> create(@RequestBody DoubtToCreate doubtInput) throws Exception {
 		ResponseWrapper<DoubtToCreate> responseWrapper = new ResponseWrapper<DoubtToCreate>();
 		responseWrapper.setData(new ArrayList<DoubtToCreate>());
 
-		try {
+		Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
 
-			Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
+		if (!validate.isEmpty()) {
+			throw new BadRequestException(
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+							.collect(Collectors.toList()).toString());
+		} else {
 
-			if (!validate.isEmpty()) {
-				throw new BadRequestException (
-						validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
-								.collect(Collectors.toList()).toString());
-			} else {
+			Doubt user = modelMapper.map(doubtInput, Doubt.class);
+			DoubtToListAndUpdate userDto = toDoubtDTO(doubtService.create(user));
 
-				Doubt user = modelMapper.map(doubtInput, Doubt.class);
-				DoubtToListAndUpdate userDto = toDoubtDTO(doubtService.create(user));
-
-				assemblyResponseSuccessOperation(responseWrapper);
-				responseWrapper.setData(Arrays.asList(userDto));
-				responseWrapper
-						.setMessage(msgUtil.getLocalizedMessage("operation.doubt.create.success", user.getQuestion()));
-			}
-
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (BadRequestException e) {
-			throw e ;
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
+			assemblyResponseSuccessOperation(responseWrapper);
+			responseWrapper.setData(Arrays.asList(userDto));
+			responseWrapper
+					.setMessage(msgUtil.getLocalizedMessage("operation.doubt.create.success", user.getQuestion()));
 		}
+
 		return responseWrapper;
 	}
 
 	@PutMapping
 	@ResponseBody
-	public ResponseWrapper<DoubtToListAndUpdate> change(@RequestBody DoubtToListAndUpdate doubtInput) {
+	public ResponseWrapper<DoubtToListAndUpdate> change(@RequestBody DoubtToListAndUpdate doubtInput) throws Exception {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
 		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
 
-		try {
-			Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
-			if (!validate.isEmpty()) {
-				throw new BadRequestException (
-						validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
-								.collect(Collectors.toList()).toString());
-			} else {
-				Doubt user = modelMapper.map(doubtInput, Doubt.class);
-				DoubtToListAndUpdate userDto = toDoubtDTO(doubtService.change(user));
+		Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
+		if (!validate.isEmpty()) {
+			throw new BadRequestException(
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+							.collect(Collectors.toList()).toString());
+		} else {
+			Doubt user = modelMapper.map(doubtInput, Doubt.class);
+			DoubtToListAndUpdate userDto = toDoubtDTO(doubtService.change(user));
 
-				assemblyResponseSuccessOperation(responseWrapper);
-				responseWrapper.setData(Arrays.asList(userDto));
-				responseWrapper
-						.setMessage(msgUtil.getLocalizedMessage("operation.doubt.change.success", user.getQuestion()));
-			}
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
+			assemblyResponseSuccessOperation(responseWrapper);
+			responseWrapper.setData(Arrays.asList(userDto));
+			responseWrapper
+					.setMessage(msgUtil.getLocalizedMessage("operation.doubt.change.success", user.getQuestion()));
 		}
+
 		return responseWrapper;
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
-	public ResponseWrapper<DoubtToListAndUpdate> delete(@PathVariable Long id) {
+	public ResponseWrapper<DoubtToListAndUpdate> delete(@PathVariable Long id) throws Exception {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
 		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
 
-		try {
-			Doubt user = doubtService.delete(id);
+		Doubt user = doubtService.delete(id);
 
-			assemblyResponseSuccessOperation(responseWrapper);
-			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.delete.success", user.getQuestion()));
+		assemblyResponseSuccessOperation(responseWrapper);
+		responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.doubt.delete.success", user.getQuestion()));
 
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
-		}
 		return responseWrapper;
 	}
 

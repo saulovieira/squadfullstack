@@ -33,3 +33,4 @@ public class Doubt {
 	@ManyToOne()
 	private Category category;
 }
+

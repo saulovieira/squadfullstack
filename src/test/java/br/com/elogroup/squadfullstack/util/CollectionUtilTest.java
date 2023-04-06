@@ -46,7 +46,7 @@ class CollectionUtilTest {
 		
 		List<String> listFromIterable = collectionUtil.getListFromIterable(iterableList);
 		
-		assertEquals(listFromIterable instanceof List, true, "A lista retornada não é do tipo esperado");
+		assertEquals(true, listFromIterable instanceof List, "A lista retornada não é do tipo esperado");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ class CollectionUtilTest {
 
 		List<String> listFromIterable = collectionUtil.getListFromIterable(iterableList);
 		
-		assertEquals(listFromIterable.get(1), item3 , "A lista retornada Não foi criada na ordem correta");				
+		assertEquals(listFromIterable.get(1), item2 , "A lista retornada Não foi criada na ordem correta");				
 	}
 	
 }

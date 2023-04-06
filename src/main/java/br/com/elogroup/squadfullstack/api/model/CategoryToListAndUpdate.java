@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryToListAndUpdate extends CategoryToCreate  implements ResourceModel{
+public class CategoryToListAndUpdate extends CategoryToCreate {
 
 	@NotNull(message = "{constraints.id.NotNull}")
-	private Long Id;
+	private Long id;
 }

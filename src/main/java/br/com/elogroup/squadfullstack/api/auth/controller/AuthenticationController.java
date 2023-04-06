@@ -49,7 +49,7 @@ public class AuthenticationController extends BaseController {
 	private final MessageUtil msgUtil;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRequest request) throws Exception {
+	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRequest request) {
 		
 		try {
 			Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(request);
@@ -57,7 +57,7 @@ public class AuthenticationController extends BaseController {
 			if (!validate.isEmpty()) {
 				throw new BadRequestException (
 						validate.stream()
-						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
+						.map(mess -> String.format("'%s'", mess.getMessage()))
 						.collect(Collectors.toList()).toString());
 			} else {
 				return ResponseEntity.ok(service.register(request));
@@ -69,96 +69,60 @@ public class AuthenticationController extends BaseController {
 			throw new NotFoundException(e.getMessage());
 		} catch (BadRequestException e) {
 			throw e ;
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			throw new InternalServerErrorException(e.getMessage());
 		}
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws Exception {
-
+	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+	
+		Set<ConstraintViolation<AuthenticationRequest>> validate = beanValidator.validate(request);
+		if (!validate.isEmpty()) {
+			throw new BadRequestException (
+					validate.stream()
+					.map(mess -> String.format("'%s'", mess.getMessage()))
+					.collect(Collectors.toList()).toString());
 			
-			Set<ConstraintViolation<AuthenticationRequest>> validate = beanValidator.validate(request);
-			if (!validate.isEmpty()) {
-				throw new BadRequestException (
-						validate.stream()
-						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
-						.collect(Collectors.toList()).toString());
-				
-			} else {
-				return ResponseEntity.ok(service.authenticate(request));
-			}
-
-		/*
-		try {
-			
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (BadCredentialsException e) {
-			throw new UnauthorizedException(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (BadRequestException e) {
-			throw e ;
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
-		}*/
+		} else {
+			return ResponseEntity.ok(service.authenticate(request));
+		}
 	}
 	
 	@GetMapping()
 	@ResponseBody
 	public ResponseWrapper<UserResponse> getAll() {
-		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
-		responseWrapper.setData(new ArrayList<UserResponse>());
-			List<UserDetail> users = service.getAll();
-			responseWrapper.setData(new ArrayList<UserResponse>());
-			assemblyResponseSuccessOperation(responseWrapper);
+		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
+		List<UserDetail> users = service.getAll();
+		responseWrapper.setData(new ArrayList<>());
+		assemblyResponseSuccessOperation(responseWrapper);
 
-			if (users != null && !users.isEmpty()) {
-				List<UserResponse> usersDto = users.stream().map(this::toUserResponse).collect(Collectors.toList());
-				responseWrapper.setData(usersDto);
-				
-			}else  {
-				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findAll.notFound"));
-			}
-			/*
-			try {
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
-		}*/
+		if (users != null && !users.isEmpty()) {
+			List<UserResponse> usersDto = users.stream().map(this::toUserResponse).collect(Collectors.toList());
+			responseWrapper.setData(usersDto);
 			
+		}else  {
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findAll.notFound"));
+		}
 		return responseWrapper;
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseWrapper<UserResponse> getById(@PathVariable Long id) {
-		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
-		responseWrapper.setData(new ArrayList<UserResponse>());
-			UserDetail user = service.getById(id);
-			responseWrapper.setData(new ArrayList<UserResponse>());
-			assemblyResponseSuccessOperation(responseWrapper);
+		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
+		UserDetail user = service.getById(id);
+		responseWrapper.setData(new ArrayList<>());
+		assemblyResponseSuccessOperation(responseWrapper);
 
-			if (user != null) {
-				responseWrapper.setData(Collections.singletonList( modelMapper.map(user, UserResponse.class)));
-			} else {				
-				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
-				responseWrapper.setSuccess(false);
-			}
-
-			/*
-			try {
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
-		}*/
+		if (user != null) {
+			responseWrapper.setData(Collections.singletonList( modelMapper.map(user, UserResponse.class)));
+		} else {				
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.findById.notFound"));
+			responseWrapper.setSuccess(false);
+		}
 		return responseWrapper;
 	}
 	
@@ -166,58 +130,36 @@ public class AuthenticationController extends BaseController {
 	@PutMapping
 	@ResponseBody
 	public ResponseWrapper<UserResponse> change(@RequestBody UserRequest userInput) {
-		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
+		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<>();
 
+		Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(userInput);
 
-			Set<ConstraintViolation<UserRequest>> validate = beanValidator.validate(userInput);
+		if (!validate.isEmpty()) {
+			throw new BadRequestException (validate.stream()
+					.map(mess -> String.format("'%s'", mess.getMessage()))
+					.collect(Collectors.toList()).toString());
+		} else {
 
-			if (!validate.isEmpty()) {
-				throw new BadRequestException (validate.stream()
-						.map(mess -> String.format("'%s'", mess.getMessage().toString()))
-						.collect(Collectors.toList()).toString());
-			} else {
+			UserResponse user = modelMapper.map(userInput, UserResponse.class);
+			UserResponse userDto = toUserResponse(service.update(user));
 
-				UserResponse user = modelMapper.map(userInput, UserResponse.class);
-				UserResponse userDto = toUserResponse(service.update(user));
-
-				assemblyResponseSuccessOperation(responseWrapper);
-				responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.change.success", user.getEmail()));
-				responseWrapper.setData(Arrays.asList(userDto));
-			}
-			/*
-			try {
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (BadRequestException e) {
-			throw e ;
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
+			assemblyResponseSuccessOperation(responseWrapper);
+			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.change.success", user.getEmail()));
+			responseWrapper.setData(Arrays.asList(userDto));
 		}
-		*/
 		return responseWrapper;
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
 	public ResponseWrapper<UserResponse> delete(@PathVariable Long id) {
-		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<UserResponse>();
-		responseWrapper.setData(new ArrayList<UserResponse>());
+		ResponseWrapper<UserResponse> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
-			UserDetail user = service.delete(id);
-			assemblyResponseSuccessOperation(responseWrapper);
-			responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.delete.success", user.getEmail()));
-			/*
-			try {
-		} catch (ForbiddenException | DataIntegrityViolationException e) {
-			throw new ForbiddenException(e.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new NotFoundException(e.getMessage());
-		} catch (Throwable e) {
-			throw new InternalServerErrorException(e.getMessage());
-		}*/
-		
+		UserDetail user = service.delete(id);
+		assemblyResponseSuccessOperation(responseWrapper);
+		responseWrapper.setMessage(msgUtil.getLocalizedMessage("operation.user.delete.success", user.getEmail()));
+
 		return responseWrapper;
 	}
 

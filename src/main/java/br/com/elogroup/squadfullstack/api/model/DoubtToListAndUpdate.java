@@ -14,6 +14,6 @@ import lombok.Setter;
 public class DoubtToListAndUpdate extends DoubtToCreate {
 	
 	@NotNull(message = "{constraints.Id.NotNull}")
-	private Long Id;
+	private Long id;
 	
 }

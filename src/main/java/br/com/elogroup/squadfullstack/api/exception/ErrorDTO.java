@@ -9,14 +9,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ErrorDTO {
-	public String status;
-	public String message;
+	private String status;
+	private String message;
 	@JsonInclude(Include.NON_NULL)
-	public String detailMessage;
-	public String time;
-	public ExceptionType type;
-	public boolean success;
-	public int statusCode; 
-	public String path;
-	
+	private String detailMessage;
+	private String time;
+	private ExceptionType type;
+	private boolean success;
+	private int statusCode; 
+	private String path;
 }

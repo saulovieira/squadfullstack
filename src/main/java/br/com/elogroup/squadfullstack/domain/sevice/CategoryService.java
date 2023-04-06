@@ -31,7 +31,7 @@ public class CategoryService {
 		return userUtils.getListFromIterable(repository.findAll());
 	}
 
-	public Category create(@Valid Category category) throws Exception {
+	public Category create(@Valid Category category) {
 		
 		if (repository.findByName(category.getName()).isPresent()) {
 			throw new ConflictException(msgUtils.getLocalizedMessage("exception.category.duplicateName", category.getName()));
@@ -40,7 +40,7 @@ public class CategoryService {
 		return repository.save(category);
 	}
 	
-	public Category change(@Valid Category doubt) throws Exception {
+	public Category change(@Valid Category doubt) {
 		
 		if (repository.findById(doubt.getId()).isEmpty()) {
 			throw new NotFoundException(msgUtils.getLocalizedMessage("exception.category.notExists", doubt.getId()));
@@ -50,7 +50,7 @@ public class CategoryService {
 		return repository.save(doubt);			
 	}
 	
-	public Category delete(Long id) throws Exception {
+	public Category delete(Long id) {
 			
 		Optional<Category> userToDelete = repository.findById(id);
 		if (userToDelete.isEmpty()) {

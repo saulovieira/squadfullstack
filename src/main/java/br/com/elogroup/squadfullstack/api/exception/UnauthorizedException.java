@@ -13,10 +13,11 @@ public class UnauthorizedException extends RuntimeException implements GenericHt
 
 	private static final long serialVersionUID = -7811376377421246051L;
 	
-	private String detailMessage;
+	private final String detailMessage;
 
-	public UnauthorizedException(String message) {
+	public UnauthorizedException(String message, String detailMessage) {
 		super(message);
+		this.detailMessage = detailMessage;
 	}
 
 	public HttpStatus getStatus() {

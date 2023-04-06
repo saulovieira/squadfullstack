@@ -23,7 +23,7 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "serial")
 	@Id
-	private Long Id;
+	private Long id;
 	
 	private String name;
 	

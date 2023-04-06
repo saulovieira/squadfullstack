@@ -24,7 +24,7 @@ public class Doubt {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "serial")
 	@Id
-	private Long Id;
+	private Long id;
 	
 	private String question;
 	

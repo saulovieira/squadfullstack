@@ -9,10 +9,8 @@ public class ModelMapperConfig {
 
 	@Bean
 	ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		
 		//Add custom strategies to convert fields
 		
-		return modelMapper;
+		return new ModelMapper();
 	}
 }

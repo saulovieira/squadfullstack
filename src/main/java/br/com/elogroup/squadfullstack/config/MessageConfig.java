@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 public class MessageConfig extends AcceptHeaderLocaleResolver implements WebMvcConfigurer {
 
-	private List<Locale> LOCALES = Arrays.asList(new Locale("en"), new Locale("pt"));
+	private static final List<Locale> LOCALES = Arrays.asList(new Locale("en"), new Locale("pt"));
 
 	@Bean
 	MessageSource messageSource() {

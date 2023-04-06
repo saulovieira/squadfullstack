@@ -41,11 +41,11 @@ public class DoubtController extends BaseController {
 	@GetMapping()
 	@ResponseBody
 	public ResponseWrapper<DoubtToListAndUpdate> getAll() {
-		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		List<Doubt> users = doubtService.getDoubts();
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		responseWrapper.setData(new ArrayList<>());
 		assemblyResponseSuccessOperation(responseWrapper);
 
 		if (users != null && !users.isEmpty()) {
@@ -64,11 +64,11 @@ public class DoubtController extends BaseController {
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseWrapper<DoubtToListAndUpdate> getById(@PathVariable Long id) {
-		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Doubt doubt = doubtService.geDoubtById(id);
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		responseWrapper.setData(new ArrayList<>());
 		assemblyResponseSuccessOperation(responseWrapper);
 
 		if (doubt != null) {
@@ -84,14 +84,14 @@ public class DoubtController extends BaseController {
 	@PostMapping()
 	@ResponseBody
 	public ResponseWrapper<DoubtToCreate> create(@RequestBody DoubtToCreate doubtInput) throws Exception {
-		ResponseWrapper<DoubtToCreate> responseWrapper = new ResponseWrapper<DoubtToCreate>();
-		responseWrapper.setData(new ArrayList<DoubtToCreate>());
+		ResponseWrapper<DoubtToCreate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
 
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
-					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
 							.collect(Collectors.toList()).toString());
 		} else {
 
@@ -110,13 +110,13 @@ public class DoubtController extends BaseController {
 	@PutMapping
 	@ResponseBody
 	public ResponseWrapper<DoubtToListAndUpdate> change(@RequestBody DoubtToListAndUpdate doubtInput) throws Exception {
-		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Set<ConstraintViolation<DoubtToCreate>> validate = beanValidator.validate(doubtInput);
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
-					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
 							.collect(Collectors.toList()).toString());
 		} else {
 			Doubt user = modelMapper.map(doubtInput, Doubt.class);
@@ -134,8 +134,8 @@ public class DoubtController extends BaseController {
 	@DeleteMapping("/{id}")
 	@ResponseBody
 	public ResponseWrapper<DoubtToListAndUpdate> delete(@PathVariable Long id) throws Exception {
-		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<DoubtToListAndUpdate>();
-		responseWrapper.setData(new ArrayList<DoubtToListAndUpdate>());
+		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Doubt user = doubtService.delete(id);
 

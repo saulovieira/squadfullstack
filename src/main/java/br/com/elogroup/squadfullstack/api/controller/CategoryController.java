@@ -41,11 +41,11 @@ public class CategoryController extends BaseController {
 	@GetMapping()
 	@ResponseBody
 	public ResponseWrapper<CategoryToCreate> getAll() {
-		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<CategoryToCreate>();
-		responseWrapper.setData(new ArrayList<CategoryToCreate>());
+		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		List<Category> users = categoryService.getCategories();
-		responseWrapper.setData(new ArrayList<CategoryToCreate>());
+		responseWrapper.setData(new ArrayList<>());
 		assemblyResponseSuccessOperation(responseWrapper);
 
 		if (users != null && !users.isEmpty()) {
@@ -64,13 +64,13 @@ public class CategoryController extends BaseController {
 	@PostMapping()
 	@ResponseBody
 	public ResponseWrapper<CategoryToCreate> create(@RequestBody CategoryToCreate categoryInput) throws Exception {
-		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<CategoryToCreate>();
-		responseWrapper.setData(new ArrayList<CategoryToCreate>());
+		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Set<ConstraintViolation<@Valid CategoryToCreate>> validate = beanValidator.validate(categoryInput);
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
-					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
 							.collect(Collectors.toList()).toString());
 		} else {
 
@@ -90,13 +90,13 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	public ResponseWrapper<CategoryToCreate> change(@RequestBody CategoryToListAndUpdate categoryInput)
 			throws Exception {
-		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<CategoryToCreate>();
-		responseWrapper.setData(new ArrayList<CategoryToCreate>());
+		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		Set<ConstraintViolation<CategoryToListAndUpdate>> validate = beanValidator.validate(categoryInput);
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
-					validate.stream().map(mess -> String.format("'%s'", mess.getMessage().toString()))
+					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
 							.collect(Collectors.toList()).toString());
 		} else {
 
@@ -115,8 +115,8 @@ public class CategoryController extends BaseController {
 	@DeleteMapping("/{id}")
 	@ResponseBody
 	public ResponseWrapper<CategoryToCreate> delete(@PathVariable Long id) throws Exception {
-		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<CategoryToCreate>();
-		responseWrapper.setData(new ArrayList<CategoryToCreate>());
+		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setData(new ArrayList<>());
 
 		assemblyResponseSuccessOperation(responseWrapper);
 		Category user = categoryService.delete(id);

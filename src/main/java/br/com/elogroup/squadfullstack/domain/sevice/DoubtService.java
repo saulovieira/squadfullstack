@@ -42,7 +42,7 @@ public class DoubtService {
 		return repository.findById(id).orElse(null);
 	}
 	
-	public Doubt create(@Valid Doubt doubt) throws Exception {
+	public Doubt create(@Valid Doubt doubt) {
 		
 		if (categoryRepository.findById(doubt.getCategory().getId()).isEmpty()) {
 			throw new NotFoundException(msgUtils.getLocalizedMessage("operation.category.findById.notFound", doubt.getCategory().getId()));
@@ -55,7 +55,7 @@ public class DoubtService {
 		return repository.save(doubt);
 	}
 	
-	public Doubt change(@Valid Doubt doubt) throws Exception {
+	public Doubt change(@Valid Doubt doubt) {
 		
 		if (repository.findById(doubt.getId()).isEmpty()) {
 			throw new NotFoundException(msgUtils.getLocalizedMessage("exception.doubt.notExists", doubt.getId()));
@@ -64,7 +64,7 @@ public class DoubtService {
 		return repository.save(doubt);			
 	}
 	
-	public Doubt delete(Long id) throws Exception {
+	public Doubt delete(Long id) {
 		
 		
 		Optional<Doubt> userToDelete = repository.findById(id);

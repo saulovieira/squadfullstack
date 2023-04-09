@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, request);
 		errorDTO.setType(ExceptionType.EXCEPTION);
 
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 
 	@ExceptionHandler(BadRequestException.class)
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, request);
 		errorDTO.setType(ExceptionType.VALIDATION);
 		
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
 		errorDTO.setType(ExceptionType.VALIDATION);
 		errorDTO.setPath(request.getServletPath());
 		
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(UsernameNotFoundException.class)
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 		errorDTO.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 		errorDTO.setType(ExceptionType.VALIDATION);
 		errorDTO.setPath(request.getServletPath());
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
 	}
 	
 
@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
 		errorDTO.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 		errorDTO.setType(ExceptionType.VALIDATION);
 		errorDTO.setPath(request.getServletPath());
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
 	}
 	
 	@ExceptionHandler(ConflictException.class)
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, reques);
 		errorDTO.setType(ExceptionType.VALIDATION);
 		
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 	
 	@ExceptionHandler(ExpiredJwtException.class)
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
 		
 		errorDTO.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 		errorDTO.setPath(request.getServletPath());
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
 	}	
 	
 	@ExceptionHandler(Throwable.class)
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
 		
 		errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		errorDTO.setPath(request.getServletPath());
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}	
 	
 	
@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
 		errorDTO.setSuccess(false);
 		errorDTO.setType(ExceptionType.EXCEPTION);
 		errorDTO.setPath(request.getServletPath());
-		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(NotFoundException.class)
@@ -138,7 +138,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, request);
 		errorDTO.setType(ExceptionType.VALIDATION);
 		
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 
 	@ExceptionHandler(InternalServerErrorException.class)
@@ -146,7 +146,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, request);
 		errorDTO.setType(ExceptionType.EXCEPTION);
 
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 
 	@ExceptionHandler(UnauthorizedException.class)
@@ -154,7 +154,7 @@ public class GlobalExceptionHandler {
 		ErrorDTO errorDTO = fillErrorDto(ex, request);
 		errorDTO.setType(ExceptionType.EXCEPTION);
 
-		return new ResponseEntity<ErrorDTO>(errorDTO, ex.getStatus());
+		return new ResponseEntity<>(errorDTO, ex.getStatus());
 	}
 
 	private ErrorDTO fillErrorDto(GenericHttpException ex, HttpServletRequest request) {

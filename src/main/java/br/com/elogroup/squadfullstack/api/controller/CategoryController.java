@@ -50,7 +50,7 @@ public class CategoryController extends BaseController {
 
 		if (users != null && !users.isEmpty()) {
 
-			List<CategoryToCreate> usersDto = users.stream().map(this::toCategoryToList).collect(Collectors.toList());
+			List<CategoryToCreate> usersDto = users.stream().map(this::toCategoryToList).collect(Collectors.toUnmodifiableList());
 
 			responseWrapper.setData(usersDto);
 		} else {
@@ -63,7 +63,7 @@ public class CategoryController extends BaseController {
 
 	@PostMapping()
 	@ResponseBody
-	public ResponseWrapper<CategoryToCreate> create(@RequestBody CategoryToCreate categoryInput) throws Exception {
+	public ResponseWrapper<CategoryToCreate> create(@RequestBody CategoryToCreate categoryInput) {
 		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 
@@ -71,7 +71,7 @@ public class CategoryController extends BaseController {
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
 					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
-							.collect(Collectors.toList()).toString());
+							.toList().toString());
 		} else {
 
 			Category user = modelMapper.map(categoryInput, Category.class);
@@ -88,8 +88,7 @@ public class CategoryController extends BaseController {
 
 	@PutMapping
 	@ResponseBody
-	public ResponseWrapper<CategoryToCreate> change(@RequestBody CategoryToListAndUpdate categoryInput)
-			throws Exception {
+	public ResponseWrapper<CategoryToCreate> change(@RequestBody CategoryToListAndUpdate categoryInput) {
 		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 
@@ -97,7 +96,7 @@ public class CategoryController extends BaseController {
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
 					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
-							.collect(Collectors.toList()).toString());
+							.toList().toString());
 		} else {
 
 			Category user = modelMapper.map(categoryInput, Category.class);
@@ -114,7 +113,7 @@ public class CategoryController extends BaseController {
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
-	public ResponseWrapper<CategoryToCreate> delete(@PathVariable Long id) throws Exception {
+	public ResponseWrapper<CategoryToCreate> delete(@PathVariable Long id) {
 		ResponseWrapper<CategoryToCreate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 

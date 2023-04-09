@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -49,7 +48,7 @@ public class DoubtController extends BaseController {
 		assemblyResponseSuccessOperation(responseWrapper);
 
 		if (users != null && !users.isEmpty()) {
-			List<DoubtToListAndUpdate> usersDto = users.stream().map(this::toDoubtDTO).collect(Collectors.toList());
+			List<DoubtToListAndUpdate> usersDto = users.stream().map(this::toDoubtDTO).toList();
 
 			responseWrapper.setData(usersDto);
 
@@ -83,7 +82,7 @@ public class DoubtController extends BaseController {
 
 	@PostMapping()
 	@ResponseBody
-	public ResponseWrapper<DoubtToCreate> create(@RequestBody DoubtToCreate doubtInput) throws Exception {
+	public ResponseWrapper<DoubtToCreate> create(@RequestBody DoubtToCreate doubtInput) {
 		ResponseWrapper<DoubtToCreate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 
@@ -92,7 +91,7 @@ public class DoubtController extends BaseController {
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
 					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
-							.collect(Collectors.toList()).toString());
+							.toList().toString());
 		} else {
 
 			Doubt user = modelMapper.map(doubtInput, Doubt.class);
@@ -109,7 +108,7 @@ public class DoubtController extends BaseController {
 
 	@PutMapping
 	@ResponseBody
-	public ResponseWrapper<DoubtToListAndUpdate> change(@RequestBody DoubtToListAndUpdate doubtInput) throws Exception {
+	public ResponseWrapper<DoubtToListAndUpdate> change(@RequestBody DoubtToListAndUpdate doubtInput) {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 
@@ -117,7 +116,7 @@ public class DoubtController extends BaseController {
 		if (!validate.isEmpty()) {
 			throw new BadRequestException(
 					validate.stream().map(mess -> String.format("'%s'", mess.getMessage()))
-							.collect(Collectors.toList()).toString());
+							.toList().toString());
 		} else {
 			Doubt user = modelMapper.map(doubtInput, Doubt.class);
 			DoubtToListAndUpdate userDto = toDoubtDTO(doubtService.change(user));
@@ -133,7 +132,7 @@ public class DoubtController extends BaseController {
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
-	public ResponseWrapper<DoubtToListAndUpdate> delete(@PathVariable Long id) throws Exception {
+	public ResponseWrapper<DoubtToListAndUpdate> delete(@PathVariable Long id) {
 		ResponseWrapper<DoubtToListAndUpdate> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setData(new ArrayList<>());
 

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -57,8 +56,7 @@ public class AuthenticationController extends BaseController {
 			if (!validate.isEmpty()) {
 				throw new BadRequestException (
 						validate.stream()
-						.map(mess -> String.format("'%s'", mess.getMessage()))
-						.collect(Collectors.toList()).toString());
+						.map(mess -> String.format("'%s'", mess.getMessage())).toList().toString());
 			} else {
 				return ResponseEntity.ok(service.register(request));
 			}
@@ -82,7 +80,7 @@ public class AuthenticationController extends BaseController {
 			throw new BadRequestException (
 					validate.stream()
 					.map(mess -> String.format("'%s'", mess.getMessage()))
-					.collect(Collectors.toList()).toString());
+					.toList().toString());
 			
 		} else {
 			return ResponseEntity.ok(service.authenticate(request));
@@ -99,7 +97,7 @@ public class AuthenticationController extends BaseController {
 		assemblyResponseSuccessOperation(responseWrapper);
 
 		if (users != null && !users.isEmpty()) {
-			List<UserResponse> usersDto = users.stream().map(this::toUserResponse).collect(Collectors.toList());
+			List<UserResponse> usersDto = users.stream().map(this::toUserResponse).toList();
 			responseWrapper.setData(usersDto);
 			
 		}else  {
@@ -137,7 +135,7 @@ public class AuthenticationController extends BaseController {
 		if (!validate.isEmpty()) {
 			throw new BadRequestException (validate.stream()
 					.map(mess -> String.format("'%s'", mess.getMessage()))
-					.collect(Collectors.toList()).toString());
+					.toList().toString());
 		} else {
 
 			UserResponse user = modelMapper.map(userInput, UserResponse.class);
